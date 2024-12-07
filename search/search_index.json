@@ -1,0 +1,1 @@
+{"config":{"lang":["en"],"separator":"[\\s\\-]+","pipeline":["stopWordFilter"]},"docs":[{"location":"","title":"Home","text":""},{"location":"#installation","title":"Installation","text":"<p>You can install this library through poetry:</p> <pre><code>pip install fast-healthchecks\n</code></pre>"}]}
