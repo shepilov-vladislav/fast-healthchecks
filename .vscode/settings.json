@@ -1,0 +1,32 @@
+{
+    "files.trimTrailingWhitespace": true,
+    "files.exclude": {
+        "**/.ruff_cache": true,
+        "**/.mypy_cache": true,
+        "**/.pytest_cache": true,
+        "**/.tox": true,
+        ".coverage": true,
+        "**/coverage.xml": true,
+        "**/htmlcov": true,
+    },
+    "editor.rulers": [120, 132],
+    "editor.renderWhitespace": "all",
+    "ruff.lint.args": [
+        "--preview"
+    ],
+    "ruff.lineLength": 120,
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {"source.organizeImports": "explicit"},
+        "editor.formatOnType": true,
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true,
+    },
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "yaml.customTags": ["!reference sequence"],
+    "mypy-type-checker.args": ["--config-file", "pyproject.toml", "--install-types"],
+    "mypy-type-checker.importStrategy": "fromEnvironment",
+    "mypy-type-checker.reportingScope": "workspace",
+}
