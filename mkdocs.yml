@@ -16,7 +16,7 @@ plugins:
 theme:
   name: material
   favicon: img/favicon.ico
-  logo: img/logo.svg
+  logo: img/green.svg
   icon:
     repo: fontawesome/brands/github
 

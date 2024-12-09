@@ -1,5 +1,5 @@
 <h1 align="center" style="vertical-align: middle;">
-  <img src="https://raw.githubusercontent.com/shepilov-vladislav/fast-healthchecks/refs/heads/main/docs/img/logo.svg" width="30"> <strong>FastHealthcheck</strong>
+  <img src="https://raw.githubusercontent.com/shepilov-vladislav/fast-healthchecks/refs/heads/main/docs/img/green.svg" width="30"> <strong>FastHealthcheck</strong>
 </h1>
 
 <b>Framework agnostic health checks with integrations for most popular ASGI frameworks: [FastAPI](https://github.com/fastapi/fastapi) / [Faststream](https://github.com/airtai/faststream) / [Litestar](https://github.com/litestar-org/litestar) to help you to implement the [Health Check API](https://microservices.io/patterns/observability/health-check-api.html) pattern</b>
