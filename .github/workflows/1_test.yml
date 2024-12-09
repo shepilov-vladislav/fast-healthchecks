@@ -1,0 +1,105 @@
+name: Tests
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    tags-ignore: ["**"]
+  pull_request:
+
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  pre-commit:
+    runs-on: ubuntu-latest
+    if: github.event.repository.fork == false
+    steps:
+
+      - uses: actions/checkout@v4.2.2
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4.2.0
+
+      - name: Set up Python 3.10
+        run: uv python install 3.10
+
+      - name: Install the project
+        run: uv sync --all-extras --dev
+
+      - uses: tox-dev/action-pre-commit-uv@v1.0.1
+        env:
+          SKIP: "detect-aws-credentials,no-commit-to-branch"
+
+  unit-tests:
+    needs: [pre-commit]
+    name: test with ${{ matrix.python-version }} on ${{ matrix.os }} with ${{ matrix.pydantic-version }}
+    runs-on: ${{ matrix.os }}
+    if: github.event.repository.fork == false
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.13"
+          - "3.12"
+          - "3.11"
+          - "3.10"
+        pydantic-version:
+          - "pydantic-v1"
+          - "pydantic-v2"
+        os:
+          - ubuntu-latest
+          # - macos-latest
+          - windows-latest
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0
+      - name: Install the latest version of uv
+
+        uses: astral-sh/setup-uv@v4.2.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: "pyproject.toml"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Add .local/bin to Windows PATH
+        if: runner.os == 'Windows'
+        shell: bash
+        run: echo "$USERPROFILE/.local/bin" >> $GITHUB_PATH
+
+      - name: Set up Python ${{ matrix.python-version }}
+        run: uv python install ${{ matrix.python-version }}
+
+      - name: Run Imports Tests
+        run: |
+          uv sync
+          uv pip install pytest pytest-asyncio pytest-cov greenlet
+          uv run pytest --cov --cov-append -m 'imports' tests/unit/test_imports.py
+          uv sync --group=dev --all-extras
+
+      - name: Install Pydantic v1
+        if: matrix.pydantic-version == 'pydantic-v1'
+        run: uv pip install "pydantic>=1.10.19,<2.0.0"
+
+      - name: Install Pydantic v2
+        if: matrix.pydantic-version == 'pydantic-v2'
+        run: uv pip install "pydantic>=2.10.3,<3.0.0"
+
+      - name: Run Unit Tests
+        run: |
+          uv run pytest --cov --cov-append -m 'unit'
+          uv run coverage xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5.1.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          env_vars: OS,PYTHON
+          fail_ci_if_error: true
+          flags: unittests
+          name: codecov-umbrella
+          verbose: true
