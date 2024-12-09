@@ -152,6 +152,13 @@ make tests-all
 make serve-docs
 ```
 
+## Known alternatives
+
+- [FastAPI Health](https://github.com/Kludex/fastapi-health)
+- [FastAPI Health Monitor](https://github.com/adamkirchberger/fastapi-health-monitor)
+- [fastapi_healthz](https://github.com/matteocacciola/fastapi_healthz)
+- [fastapi_healthcheck](https://github.com/jtom38/fastapi_healthcheck)
+
 ## License
 
 This project is licensed under the terms of the MIT license.
