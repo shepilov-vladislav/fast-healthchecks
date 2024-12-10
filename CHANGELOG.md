@@ -1,3 +1,10 @@
+## 0.1.2 (2024-12-10)
+
+### Fix
+
+- **setuptools**: included packages
+- **docs**: changed logo for documentation to green color
+
 ## 0.1.1 (2024-12-09)
 
 ### Fix
