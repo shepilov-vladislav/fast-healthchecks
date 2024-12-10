@@ -30,7 +30,12 @@ requires-python = "<4.0.0,>=3.10.0"
 dependencies = []
 
 [tool.setuptools]
-packages = ["fast_healthchecks"]
+packages = [
+    "fast_healthchecks",
+    "fast_healthchecks.checks",
+    "fast_healthchecks.checks.postgresql",
+    "fast_healthchecks.integrations",
+]
 
 [project.urls]
 homepage = "https://github.com/shepilov-vladislav/fast-healthchecks"
