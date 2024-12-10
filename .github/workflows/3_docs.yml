@@ -8,7 +8,6 @@ on:
       - 'docs/**'
       - 'CHANGELOG.md'
       - 'mkdocs.yml'
-      - 'requirements-docs.txt'
 
 jobs:
   build:
