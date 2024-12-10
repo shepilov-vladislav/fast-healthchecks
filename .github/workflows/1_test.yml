@@ -5,6 +5,14 @@ on:
   push:
     branches: ["main"]
     tags-ignore: ["**"]
+    paths:
+      - "examples/**"
+      - "fast_healthchecks/**"
+      - "tests/**"
+      - ".pre-commit-config.yaml"
+      - "pyproject.toml"
+      - "requirements.txt"
+      - "uv.lock"
   pull_request:
 
 concurrency:
