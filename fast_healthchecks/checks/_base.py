@@ -67,9 +67,6 @@ class HealthCheckDSN(HealthCheck[T_co], Generic[T_co]):
             type_(dsn)  # type: ignore[arg-type]
             return str(dsn)
 
-        if isinstance(dsn, type_):
-            return str(dsn)
-
         if PYDANTIC_V2:
             return str(TypeAdapter(type_).validate_python(dsn))
         return str(parse_obj_as(type_, dsn))  # pragma: no cover
