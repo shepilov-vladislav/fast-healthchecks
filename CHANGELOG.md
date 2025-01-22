@@ -1,3 +1,10 @@
+## 0.1.4 (2025-01-22)
+
+### Fix
+
+- **dependencies**: upgrade dependencies and pre-commit
+- **mongo**: fixed Mongo check
+
 ## 0.1.3 (2024-12-10)
 
 ### Fix
