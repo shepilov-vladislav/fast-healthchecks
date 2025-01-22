@@ -184,7 +184,7 @@ class MongoHealthCheck(HealthCheckDSN[HealthCheckResult]):
         database = client[self._database] if self._database else client[self._auth_source]
         try:
             res = await database.command("ping")
-            return HealthCheckResult(name=self._name, healthy=res == {"ok": 1.0})
+            return HealthCheckResult(name=self._name, healthy=res.get("ok") == 1.0)
         except BaseException:  # noqa: BLE001
             return HealthCheckResult(name=self._name, healthy=False, error_details=format_exc())
         finally:
