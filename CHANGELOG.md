@@ -1,3 +1,9 @@
+## 0.1.5 (2025-01-23)
+
+### Fix
+
+- **redis**: added support for ssl connections
+
 ## 0.1.4 (2025-01-22)
 
 ### Fix
