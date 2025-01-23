@@ -16,9 +16,9 @@
     <img src="https://codecov.io/gh/shepilov-vladislav/fast-healthchecks/branch/main/graph/badge.svg?token=ddDOL8qZLp" alt="Coverage"/>
   </a>
 
-  <!-- <a href="https://www.pepy.tech/projects/fast-healthchecks" target="_blank">
+  <a href="https://www.pepy.tech/projects/fast-healthchecks" target="_blank">
     <img src="https://static.pepy.tech/personalized-badge/fast-healthchecks?period=month&units=international_system&left_color=grey&right_color=green&left_text=downloads/month" alt="Downloads"/>
-  </a> -->
+  </a>
 
   <a href="https://pypi.org/project/fast-healthchecks" target="_blank">
     <img src="https://img.shields.io/pypi/v/fast-healthchecks?label=PyPI" alt="Package version"/>
@@ -40,17 +40,17 @@
 
 With `pip`:
 ```bash
-pip install fast-healthcheck
+pip install fast-healthchecks
 ```
 
 With `poetry`:
 ```bash
-poetry add fast-healthcheck
+poetry add fast-healthchecks
 ```
 
 With `uv`:
 ```bash
-uv add fast-healthcheck
+uv add fast-healthchecks
 ```
 
 ## Quick Start

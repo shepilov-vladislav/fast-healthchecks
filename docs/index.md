@@ -10,17 +10,17 @@
 
 With `pip`:
 ```bash
-pip install fast-healthcheck
+pip install fast-healthchecks
 ```
 
 With `poetry`:
 ```bash
-poetry add fast-healthcheck
+poetry add fast-healthchecks
 ```
 
 With `uv`:
 ```bash
-uv add fast-healthcheck
+uv add fast-healthchecks
 ```
 
 ## Usage
