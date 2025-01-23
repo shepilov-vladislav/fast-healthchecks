@@ -57,6 +57,8 @@ class RedisHealthCheck(HealthCheckDSN[HealthCheckResult]):
         _port: The port to connect to.
         _timeout: The timeout for the connection.
         _user: The user to authenticate with.
+        _ssl: Whether to use SSL or not.
+        _ssl_ca_certs: The path to the CA certificate.
     """
 
     __slots__ = (
@@ -65,6 +67,8 @@ class RedisHealthCheck(HealthCheckDSN[HealthCheckResult]):
         "_name",
         "_password",
         "_port",
+        "_ssl",
+        "_ssl_ca_certs",
         "_timeout",
         "_user",
     )
@@ -76,8 +80,10 @@ class RedisHealthCheck(HealthCheckDSN[HealthCheckResult]):
     _password: str | None
     _timeout: float | None
     _name: str
+    _ssl: bool
+    _ssl_ca_certs: str | None
 
-    def __init__(  # noqa: PLR0913
+    def __init__(  # noqa: PLR0913, D417
         self,
         *,
         host: str = "localhost",
@@ -85,6 +91,8 @@ class RedisHealthCheck(HealthCheckDSN[HealthCheckResult]):
         database: str | int = 0,
         user: str | None = None,
         password: str | None = None,
+        ssl: bool = False,
+        ssl_ca_certs: str | None = None,
         timeout: float | None = DEFAULT_HC_TIMEOUT,
         name: str = "Redis",
     ) -> None:
@@ -104,6 +112,8 @@ class RedisHealthCheck(HealthCheckDSN[HealthCheckResult]):
         self._database = database
         self._user = user
         self._password = password
+        self._ssl = ssl
+        self._ssl_ca_certs = ssl_ca_certs
         self._timeout = timeout
         self._name = name
 
@@ -141,12 +151,16 @@ class RedisHealthCheck(HealthCheckDSN[HealthCheckResult]):
         dsn = cls.validate_dsn(dsn, type_=RedisDsn)
         parsed_dsn = cls.parse_dsn(dsn)
         parse_result = parsed_dsn["parse_result"]
+        ssl_ca_certs: str | None = parse_result.get("ssl_ca_certs", None)  # type: ignore[assignment]
+        ssl = "ssl_ca_certs" in parse_result and bool(ssl_ca_certs)
         return RedisHealthCheck(
             host=parse_result.get("host", "localhost"),
             port=parse_result.get("port", 6379),
             database=parse_result.get("db", 0),
             user=parse_result.get("username"),
             password=parse_result.get("password"),
+            ssl=ssl,
+            ssl_ca_certs=ssl_ca_certs,
             timeout=timeout,
             name=name,
         )
@@ -166,6 +180,8 @@ class RedisHealthCheck(HealthCheckDSN[HealthCheckResult]):
                 password=self._password,
                 socket_timeout=self._timeout,
                 single_connection_client=True,
+                ssl=self._ssl,
+                ssl_ca_certs=self._ssl_ca_certs,
             ) as redis:
                 healthy: bool = await redis.ping()
                 return HealthCheckResult(name=self._name, healthy=healthy)
