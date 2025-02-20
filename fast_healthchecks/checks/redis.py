@@ -16,7 +16,7 @@ Example:
 """
 
 from traceback import format_exc
-from typing import TYPE_CHECKING, TypeAlias, TypedDict
+from typing import TYPE_CHECKING, Any, TypeAlias, TypedDict
 
 from fast_healthchecks.checks._base import DEFAULT_HC_TIMEOUT, HealthCheckDSN
 from fast_healthchecks.compat import PYDANTIC_INSTALLED
@@ -187,3 +187,21 @@ class RedisHealthCheck(HealthCheckDSN[HealthCheckResult]):
                 return HealthCheckResult(name=self._name, healthy=healthy)
         except BaseException:  # noqa: BLE001
             return HealthCheckResult(name=self._name, healthy=False, error_details=format_exc())
+
+    def to_dict(self) -> dict[str, Any]:
+        """Converts the RedisHealthCheck object to a dictionary.
+
+        Returns:
+            A dictionary with the RedisHealthCheck attributes.
+        """
+        return {
+            "host": self._host,
+            "port": self._port,
+            "database": self._database,
+            "user": self._user,
+            "password": self._password,
+            "ssl": self._ssl,
+            "ssl_ca_certs": self._ssl_ca_certs,
+            "timeout": self._timeout,
+            "name": self._name,
+        }

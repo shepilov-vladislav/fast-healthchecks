@@ -189,3 +189,20 @@ class MongoHealthCheck(HealthCheckDSN[HealthCheckResult]):
             return HealthCheckResult(name=self._name, healthy=False, error_details=format_exc())
         finally:
             client.close()
+
+    def to_dict(self) -> dict[str, Any]:
+        """Converts the MongoHealthCheck object to a dictionary.
+
+        Returns:
+            A dictionary with the MongoHealthCheck attributes.
+        """
+        return {
+            "host": self._host,
+            "port": self._port,
+            "user": self._user,
+            "password": self._password,
+            "database": self._database,
+            "auth_source": self._auth_source,
+            "timeout": self._timeout,
+            "name": self._name,
+        }

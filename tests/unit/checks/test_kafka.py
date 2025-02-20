@@ -12,19 +12,6 @@ pytestmark = pytest.mark.unit
 test_ssl_context = ssl.create_default_context()
 
 
-def to_dict(obj: KafkaHealthCheck) -> dict[str, Any]:
-    return {
-        "bootstrap_servers": obj._bootstrap_servers,
-        "ssl_context": obj._ssl_context,
-        "security_protocol": obj._security_protocol,
-        "sasl_mechanism": obj._sasl_mechanism,
-        "sasl_plain_username": obj._sasl_plain_username,
-        "sasl_plain_password": obj._sasl_plain_password,
-        "timeout": obj._timeout,
-        "name": obj._name,
-    }
-
-
 @pytest.mark.parametrize(
     ("params", "expected", "exception"),
     [
@@ -346,7 +333,7 @@ def test__init(params: dict[str, Any], expected: dict[str, Any] | str, exception
             KafkaHealthCheck(**params)
     else:
         obj = KafkaHealthCheck(**params)
-        assert to_dict(obj) == expected
+        assert obj.to_dict() == expected
 
 
 @pytest.mark.asyncio

@@ -9,19 +9,6 @@ from fast_healthchecks.checks.mongo import MongoHealthCheck
 pytestmark = pytest.mark.unit
 
 
-def to_dict(obj: MongoHealthCheck) -> dict[str, Any]:
-    return {
-        "host": obj._host,
-        "port": obj._port,
-        "user": obj._user,
-        "password": obj._password,
-        "database": obj._database,
-        "auth_source": obj._auth_source,
-        "timeout": obj._timeout,
-        "name": obj._name,
-    }
-
-
 @pytest.mark.parametrize(
     ("params", "expected", "exception"),
     [
@@ -203,7 +190,7 @@ def test_init(params: dict[str, Any], expected: dict[str, Any], exception: type[
             MongoHealthCheck(**params)
     else:
         obj = MongoHealthCheck(**params)
-        assert to_dict(obj) == expected
+        assert obj.to_dict() == expected
 
 
 @pytest.mark.parametrize(
@@ -306,7 +293,7 @@ def test_from_dsn(
             MongoHealthCheck.from_dsn(*args, **kwargs)
     else:
         obj = MongoHealthCheck.from_dsn(*args, **kwargs)
-        assert to_dict(obj) == expected
+        assert obj.to_dict() == expected
 
 
 @pytest.mark.asyncio

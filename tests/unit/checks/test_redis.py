@@ -9,20 +9,6 @@ from fast_healthchecks.checks.redis import RedisHealthCheck
 pytestmark = pytest.mark.unit
 
 
-def to_dict(obj: RedisHealthCheck) -> dict[str, Any]:
-    return {
-        "host": obj._host,
-        "port": obj._port,
-        "database": obj._database,
-        "user": obj._user,
-        "password": obj._password,
-        "ssl": obj._ssl,
-        "ssl_ca_certs": obj._ssl_ca_certs,
-        "timeout": obj._timeout,
-        "name": obj._name,
-    }
-
-
 @pytest.mark.parametrize(
     ("params", "expected", "exception"),
     [
@@ -208,7 +194,7 @@ def test_init(params: dict[str, Any], expected: dict[str, Any], exception: type[
             RedisHealthCheck(**params)
     else:
         obj = RedisHealthCheck(**params)
-        assert to_dict(obj) == expected
+        assert obj.to_dict() == expected
 
 
 @pytest.mark.parametrize(
@@ -347,7 +333,7 @@ def test_from_dsn(
             RedisHealthCheck.from_dsn(*args, **kwargs)
     else:
         obj = RedisHealthCheck.from_dsn(*args, **kwargs)
-        assert to_dict(obj) == expected
+        assert obj.to_dict() == expected
 
 
 @pytest.mark.asyncio

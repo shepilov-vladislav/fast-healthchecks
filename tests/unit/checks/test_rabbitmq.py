@@ -8,19 +8,6 @@ from fast_healthchecks.checks.rabbitmq import RabbitMQHealthCheck
 pytestmark = pytest.mark.unit
 
 
-def to_dict(obj: RabbitMQHealthCheck) -> dict[str, Any]:
-    return {
-        "host": obj._host,
-        "user": obj._user,
-        "password": obj._password,
-        "port": obj._port,
-        "vhost": obj._vhost,
-        "secure": obj._secure,
-        "timeout": obj._timeout,
-        "name": obj._name,
-    }
-
-
 @pytest.mark.parametrize(
     ("params", "expected", "exception"),
     [
@@ -175,7 +162,7 @@ def test_init(params: dict[str, Any], expected: dict[str, Any], exception: type[
             RabbitMQHealthCheck(**params)
     else:
         obj = RabbitMQHealthCheck(**params)
-        assert to_dict(obj) == expected
+        assert obj.to_dict() == expected
 
 
 @pytest.mark.parametrize(
@@ -295,7 +282,7 @@ def test_from_dsn(
             RabbitMQHealthCheck.from_dsn(*args, **kwargs)
     else:
         obj = RabbitMQHealthCheck.from_dsn(*args, **kwargs)
-        assert to_dict(obj) == expected
+        assert obj.to_dict() == expected
 
 
 @pytest.mark.asyncio

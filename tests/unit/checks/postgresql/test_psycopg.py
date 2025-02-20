@@ -18,22 +18,6 @@ from tests.utils import (
 pytestmark = pytest.mark.unit
 
 
-def to_dict(obj: PostgreSQLPsycopgHealthCheck) -> dict[str, Any]:
-    return {
-        "host": obj._host,
-        "port": obj._port,
-        "user": obj._user,
-        "password": obj._password,
-        "database": obj._database,
-        "sslmode": obj._sslmode,
-        "sslcert": obj._sslcert,
-        "sslkey": obj._sslkey,
-        "sslrootcert": obj._sslrootcert,
-        "timeout": obj._timeout,
-        "name": obj._name,
-    }
-
-
 @pytest.mark.parametrize(
     ("params", "expected", "exception"),
     [
@@ -812,7 +796,7 @@ def test__init(params: dict[str, Any], expected: dict[str, Any] | str, exception
             PostgreSQLPsycopgHealthCheck(**params)
     else:
         obj = PostgreSQLPsycopgHealthCheck(**params)
-        assert to_dict(obj) == expected
+        assert obj.to_dict() == expected
 
 
 @pytest.mark.parametrize(
@@ -1169,7 +1153,7 @@ def test_from_dsn(
             check = PostgreSQLPsycopgHealthCheck.from_dsn(*args, **kwargs)
             if "ssl" in expected and expected["ssl"] is not None:
                 expected["ssl"] = create_ssl_context(*expected["ssl"])
-            assert to_dict(check) == expected
+            assert check.to_dict() == expected
 
 
 @pytest.mark.asyncio

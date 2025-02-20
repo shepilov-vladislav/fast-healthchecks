@@ -24,7 +24,7 @@ Example:
 """
 
 from traceback import format_exc
-from typing import TYPE_CHECKING, TypeAlias
+from typing import TYPE_CHECKING, Any, TypeAlias
 
 from fast_healthchecks.checks._base import DEFAULT_HC_TIMEOUT
 from fast_healthchecks.checks.postgresql.base import BasePostgreSQLHealthCheck, SslMode
@@ -197,3 +197,23 @@ class PostgreSQLPsycopgHealthCheck(BasePostgreSQLHealthCheck[HealthCheckResult])
             if connection is not None and not connection.closed:
                 await connection.cancel_safe(timeout=self._timeout)
                 await connection.close()
+
+    def to_dict(self) -> dict[str, Any]:
+        """Converts the PostgreSQLPsycopgHealthCheck object to a dictionary.
+
+        Returns:
+            A dictionary with the PostgreSQLPsycopgHealthCheck attributes.
+        """
+        return {
+            "host": self._host,
+            "port": self._port,
+            "user": self._user,
+            "password": self._password,
+            "database": self._database,
+            "sslmode": self._sslmode,
+            "sslcert": self._sslcert,
+            "sslkey": self._sslkey,
+            "sslrootcert": self._sslrootcert,
+            "timeout": self._timeout,
+            "name": self._name,
+        }

@@ -18,7 +18,7 @@ Example:
 """
 
 from traceback import format_exc
-from typing import TypeAlias, TypedDict
+from typing import Any, TypeAlias, TypedDict
 from urllib.parse import ParseResult, urlparse
 
 from fast_healthchecks.checks._base import DEFAULT_HC_TIMEOUT, HealthCheckDSN
@@ -166,3 +166,20 @@ class RabbitMQHealthCheck(HealthCheckDSN[HealthCheckResult]):
                 return HealthCheckResult(name=self._name, healthy=True)
         except BaseException:  # noqa: BLE001
             return HealthCheckResult(name=self._name, healthy=False, error_details=format_exc())
+
+    def to_dict(self) -> dict[str, Any]:
+        """Converts the RabbitMQHealthCheck object to a dictionary.
+
+        Returns:
+            A dictionary with the RabbitMQHealthCheck attributes.
+        """
+        return {
+            "host": self._host,
+            "user": self._user,
+            "password": self._password,
+            "port": self._port,
+            "vhost": self._vhost,
+            "secure": self._secure,
+            "timeout": self._timeout,
+            "name": self._name,
+        }

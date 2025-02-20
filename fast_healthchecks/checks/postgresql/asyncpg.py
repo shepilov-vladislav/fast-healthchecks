@@ -25,7 +25,7 @@ Example:
 
 import ssl
 from traceback import format_exc
-from typing import TYPE_CHECKING, TypeAlias
+from typing import TYPE_CHECKING, Any, TypeAlias
 
 from fast_healthchecks.checks._base import DEFAULT_HC_TIMEOUT
 from fast_healthchecks.checks.postgresql.base import BasePostgreSQLHealthCheck
@@ -181,3 +181,21 @@ class PostgreSQLAsyncPGHealthCheck(BasePostgreSQLHealthCheck[HealthCheckResult])
         finally:
             if connection is not None and not connection.is_closed():
                 await connection.close(timeout=self._timeout)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Converts the PostgreSQLAsyncPGHealthCheck object to a dictionary.
+
+        Returns:
+            A dictionary with the PostgreSQLAsyncPGHealthCheck attributes.
+        """
+        return {
+            "host": self._host,
+            "port": self._port,
+            "user": self._user,
+            "password": self._password,
+            "database": self._database,
+            "ssl": self._ssl,
+            "direct_tls": self._direct_tls,
+            "timeout": self._timeout,
+            "name": self._name,
+        }

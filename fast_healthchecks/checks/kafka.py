@@ -17,7 +17,7 @@ Example:
 
 import ssl
 from traceback import format_exc
-from typing import Literal, TypeAlias
+from typing import Any, Literal, TypeAlias
 
 from fast_healthchecks.checks._base import DEFAULT_HC_TIMEOUT, HealthCheck
 from fast_healthchecks.compat import PYDANTIC_INSTALLED
@@ -137,3 +137,20 @@ class KafkaHealthCheck(HealthCheck[HealthCheckResult]):
             return HealthCheckResult(name=self._name, healthy=False, error_details=format_exc())
         finally:
             await client.close()
+
+    def to_dict(self) -> dict[str, Any]:
+        """Converts the KafkaHealthCheck object to a dictionary.
+
+        Returns:
+            A dictionary with the KafkaHealthCheck attributes.
+        """
+        return {
+            "bootstrap_servers": self._bootstrap_servers,
+            "ssl_context": self._ssl_context,
+            "security_protocol": self._security_protocol,
+            "sasl_mechanism": self._sasl_mechanism,
+            "sasl_plain_username": self._sasl_plain_username,
+            "sasl_plain_password": self._sasl_plain_password,
+            "timeout": self._timeout,
+            "name": self._name,
+        }
