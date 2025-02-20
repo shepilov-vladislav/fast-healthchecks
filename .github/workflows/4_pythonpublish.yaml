@@ -20,7 +20,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v4.2.0
+        uses: astral-sh/setup-uv@v5.2.2
 
       - name: Set up Python 3.12
         run: uv python install 3.12
@@ -32,4 +32,4 @@ jobs:
         run: uv build
 
       - name: Publish package distributions to PyPI
-        uses: pypa/gh-action-pypi-publish@v1.12.3
+        uses: pypa/gh-action-pypi-publish@v1.12.4
