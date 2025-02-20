@@ -1,3 +1,21 @@
+## 0.2.0 (2025-02-20)
+
+### Feat
+
+- **healthchecks**: added OpenSearch healthcheck
+
+### Fix
+
+- **dependencies**: upgrade github actions
+- **vscode**: fixed ruff plugin setup
+- **dependencies**: upgrade dependencies
+- **dependencies**: upgrade pre-commit
+- **docs**: typo in install commands
+
+### Refactor
+
+- **tests**: move out tests `to_dict` method
+
 ## 0.1.5 (2025-01-23)
 
 ### Fix
