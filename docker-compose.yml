@@ -68,6 +68,7 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
 
   mongo:
+    container_name: dev_fast_healthchecks_mongo
     image: mongo
     restart: always
     environment:
@@ -76,3 +77,23 @@ services:
       MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
     ports:
       - "${MONGO_PORT}:27017"
+
+  opensearch:
+    container_name: dev_fast_healthchecks_opensearch
+    image: opensearchproject/opensearch
+    environment:
+      - discovery.type=single-node # Single node discovery
+      - bootstrap.memory_lock=true # Disable JVM heap memory swapping
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m" # Set min and max JVM heap sizes to at least 50% of system RAM
+      - "DISABLE_INSTALL_DEMO_CONFIG=true" # Prevents execution of bundled demo script which installs demo certificates and security configurations to OpenSearch
+      - "DISABLE_SECURITY_PLUGIN=true" # Disables Security plugin
+    ulimits:
+      memlock:
+        soft: -1 # Set memlock to unlimited (no soft or hard limit)
+        hard: -1
+      nofile:
+        soft: 65536 # Maximum number of open files for the opensearch user - set to at least 65536
+        hard: 65536
+    ports:
+      - 9200:9200 # REST API
+      - 9600:9600 # Performance Analyzer

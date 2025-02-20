@@ -23,6 +23,14 @@ def test_import_error_MongoHealthCheck() -> None:  # noqa: N802
         from fast_healthchecks.checks.mongo import MongoHealthCheck  # noqa: PLC0415, F401
 
 
+def test_import_error_OpenSearchHealthCheck() -> None:  # noqa: N802
+    with pytest.raises(
+        ImportError,
+        match=r"opensearch-py is not installed. Install it with `pip install opensearch-py`.",
+    ):
+        from fast_healthchecks.checks.opensearch import OpenSearchHealthCheck  # noqa: PLC0415, F401
+
+
 def test_import_error_RabbitMQHealthCheck() -> None:  # noqa: N802
     with pytest.raises(ImportError, match=r"aio-pika is not installed. Install it with `pip install aio-pika`."):
         from fast_healthchecks.checks.rabbitmq import RabbitMQHealthCheck  # noqa: PLC0415, F401

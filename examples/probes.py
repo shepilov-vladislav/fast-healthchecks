@@ -10,6 +10,7 @@ from fast_healthchecks.checks import Check
 from fast_healthchecks.checks.function import FunctionHealthCheck
 from fast_healthchecks.checks.kafka import KafkaHealthCheck
 from fast_healthchecks.checks.mongo import MongoHealthCheck
+from fast_healthchecks.checks.opensearch import OpenSearchHealthCheck
 from fast_healthchecks.checks.postgresql.asyncpg import PostgreSQLAsyncPGHealthCheck
 from fast_healthchecks.checks.postgresql.psycopg import PostgreSQLPsycopgHealthCheck
 from fast_healthchecks.checks.rabbitmq import RabbitMQHealthCheck
@@ -47,6 +48,7 @@ READINESS_CHECKS: list[Check] = [
         name="Kafka",
     ),
     MongoHealthCheck.from_dsn(os.environ["MONGO_DSN"], name="Mongo"),
+    OpenSearchHealthCheck(hosts=os.environ["OPENSEARCH_HOSTS"], name="OpenSearch"),  # type: ignore[arg-type]
     PostgreSQLAsyncPGHealthCheck.from_dsn(os.environ["POSTGRES_DSN"], name="PostgreSQL asyncpg"),
     PostgreSQLPsycopgHealthCheck.from_dsn(os.environ["POSTGRES_DSN"], name="PostgreSQL psycopg"),
     RabbitMQHealthCheck.from_dsn(os.environ["RABBITMQ_DSN"], name="RabbitMQ"),
