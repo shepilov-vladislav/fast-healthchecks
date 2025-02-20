@@ -11,9 +11,6 @@
     },
     "editor.rulers": [120, 132],
     "editor.renderWhitespace": "all",
-    "ruff.lint.args": [
-        "--preview"
-    ],
     "ruff.lineLength": 120,
     "[python]": {
         "editor.defaultFormatter": "charliermarsh.ruff",
@@ -29,4 +26,6 @@
     "mypy-type-checker.args": ["--config-file", "pyproject.toml", "--install-types"],
     "mypy-type-checker.importStrategy": "fromEnvironment",
     "mypy-type-checker.reportingScope": "workspace",
+    "ruff.format.preview": true,
+    "ruff.lint.preview": true,
 }
