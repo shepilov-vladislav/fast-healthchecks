@@ -20,14 +20,14 @@ class MongoConfig(TypedDict, total=True):
 @pytest.fixture(scope="session", name="mongo_config")
 def fixture_mongo_config(env_config: dict[str, Any]) -> MongoConfig:
     result: MongoConfig = {
-        "host": "localhost",
+        "hosts": "localhost",
         "port": 27017,
         "user": None,
         "password": None,
         "database": None,
         "auth_source": "admin",
     }
-    for key in ("host", "port", "user", "password", "database", "auth_source"):
+    for key in ("hosts", "port", "user", "password", "database", "auth_source"):
         value = env_config.get(f"MONGO_{key.upper()}")
         match key:
             case "port":
@@ -51,7 +51,7 @@ async def test_mongo_check_success(mongo_config: MongoConfig) -> None:
 async def test_mongo_check_failure(mongo_config: MongoConfig) -> None:
     config = {
         **mongo_config,
-        "host": "localhost2",
+        "hosts": "localhost2",
     }
     check = MongoHealthCheck(**config)
     result = await check()

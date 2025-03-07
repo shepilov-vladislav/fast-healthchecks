@@ -6,7 +6,9 @@ from fast_healthchecks.compat import PYDANTIC_INSTALLED, PYDANTIC_V2
 from fast_healthchecks.models import HealthCheckResult
 
 if TYPE_CHECKING:
-    from pydantic import AmqpDsn, KafkaDsn, MongoDsn, PostgresDsn, RedisDsn
+    from pydantic import AmqpDsn, KafkaDsn, PostgresDsn, RedisDsn
+
+    from fast_healthchecks.compat import MongoDsn
 else:
     AmqpDsn: TypeAlias = str
     KafkaDsn: TypeAlias = str

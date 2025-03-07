@@ -1,10 +1,10 @@
 from unittest.mock import patch
 
 import pytest
-from pydantic import AmqpDsn, KafkaDsn, MongoDsn, PostgresDsn, RedisDsn, ValidationError
+from pydantic import AmqpDsn, KafkaDsn, PostgresDsn, RedisDsn, ValidationError
 
 from fast_healthchecks.checks._base import HealthCheckDSN, SupportedDsns  # noqa: PLC2701
-from fast_healthchecks.compat import PYDANTIC_V2
+from fast_healthchecks.compat import PYDANTIC_V2, MongoDsn
 from fast_healthchecks.models import HealthCheckResult
 
 pytestmark = pytest.mark.unit

@@ -8,8 +8,12 @@ Usage:
 
 Example:
     health_check = MongoHealthCheck(
-        host="localhost",
-        port=27017
+        hosts=["host1:27017", "host2:27017"],
+        # or hosts="localhost",
+        port=27017,
+        user="myuser",
+        password="mypassword",
+        database="mydatabase"
     )
     result = await health_check()
     print(result.healthy)
@@ -17,11 +21,11 @@ Example:
 
 import logging
 from traceback import format_exc
-from typing import TYPE_CHECKING, Any, TypeAlias, TypedDict
+from typing import Any, TypedDict
 from urllib.parse import ParseResult, unquote, urlparse
 
 from fast_healthchecks.checks._base import DEFAULT_HC_TIMEOUT, HealthCheckDSN
-from fast_healthchecks.compat import PYDANTIC_INSTALLED
+from fast_healthchecks.compat import MongoDsn
 from fast_healthchecks.models import HealthCheckResult
 
 IMPORT_ERROR_MSG = "motor is not installed. Install it with `pip install motor`."
@@ -31,14 +35,6 @@ try:
 except ImportError as exc:
     raise ImportError(IMPORT_ERROR_MSG) from exc
 
-if TYPE_CHECKING:
-    from collections.abc import Mapping
-
-
-if PYDANTIC_INSTALLED:
-    from pydantic import MongoDsn
-else:  # pragma: no cover
-    MongoDsn: TypeAlias = str  # type: ignore[no-redef]
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +52,7 @@ class MongoHealthCheck(HealthCheckDSN[HealthCheckResult]):
     Attributes:
         _auth_source: The MongoDB authentication source.
         _database: The MongoDB database to use.
-        _host: The MongoDB host.
+        _hosts: The MongoDB host or a list of hosts.
         _name: The name of the health check.
         _password: The MongoDB password.
         _port: The MongoDB port.
@@ -67,7 +63,7 @@ class MongoHealthCheck(HealthCheckDSN[HealthCheckResult]):
     __slots__ = (
         "_auth_source",
         "_database",
-        "_host",
+        "_hosts",
         "_name",
         "_password",
         "_port",
@@ -75,8 +71,8 @@ class MongoHealthCheck(HealthCheckDSN[HealthCheckResult]):
         "_user",
     )
 
-    _host: str
-    _port: int
+    _hosts: str | list[str]
+    _port: int | None
     _user: str | None
     _password: str | None
     _database: str | None
@@ -87,8 +83,8 @@ class MongoHealthCheck(HealthCheckDSN[HealthCheckResult]):
     def __init__(  # noqa: PLR0913
         self,
         *,
-        host: str = "localhost",
-        port: int = 27017,
+        hosts: str | list[str] = "localhost",
+        port: int | None = 27017,
         user: str | None = None,
         password: str | None = None,
         database: str | None = None,
@@ -99,8 +95,8 @@ class MongoHealthCheck(HealthCheckDSN[HealthCheckResult]):
         """Initializes the MongoHealthCheck class.
 
         Args:
-            host: The MongoDB host.
-            port: The MongoDB port
+            hosts: The MongoDB host or list of hosts.
+            port: The MongoDB port (используется, если host — строка).
             user: The MongoDB user.
             password: The MongoDB password.
             database: The MongoDB database to use.
@@ -108,7 +104,7 @@ class MongoHealthCheck(HealthCheckDSN[HealthCheckResult]):
             timeout: The timeout for the health check.
             name: The name of the health check.
         """
-        self._host = host
+        self._hosts = hosts
         self._port = port
         self._user = user
         self._password = password
@@ -146,7 +142,7 @@ class MongoHealthCheck(HealthCheckDSN[HealthCheckResult]):
         """Creates a MongoHealthCheck instance from a DSN.
 
         Args:
-            dsn (MongoDsn | str): The DSN for the PostgreSQL database.
+            dsn (MongoDsn | str): The DSN for the MongoDB database.
             name (str): The name of the health check.
             timeout (float): The timeout for the connection.
 
@@ -156,9 +152,17 @@ class MongoHealthCheck(HealthCheckDSN[HealthCheckResult]):
         dsn = cls.validate_dsn(dsn, type_=MongoDsn)
         parsed_dsn = cls.parse_dsn(dsn)
         parse_result = parsed_dsn["parse_result"]
+        hosts: str | list[str]
+        port: int | None
+        if "," in parse_result.netloc:
+            hosts = parse_result.netloc.split("@")[1].split(",")
+            port = None
+        else:
+            hosts = parse_result.hostname or "localhost"
+            port = parse_result.port or 27017
         return cls(
-            host=parse_result.hostname or "localhost",
-            port=parse_result.port or 27017,
+            hosts=hosts,
+            port=port,
             user=parse_result.username,
             password=parse_result.password,
             database=parse_result.path.lstrip("/") or None,
@@ -173,14 +177,24 @@ class MongoHealthCheck(HealthCheckDSN[HealthCheckResult]):
         Returns:
             A HealthCheckResult object.
         """
-        client: AsyncIOMotorClient[Mapping[str, Any]] = AsyncIOMotorClient(
-            host=self._host,
-            port=self._port,
-            username=self._user,
-            password=self._password,
-            authSource=self._auth_source,
-            serverSelectionTimeoutMS=int(self._timeout * 1000),
-        )
+        client: AsyncIOMotorClient[dict[str, Any]]
+        if isinstance(self._hosts, list):
+            client = AsyncIOMotorClient(
+                host=self._hosts,
+                username=self._user,
+                password=self._password,
+                authSource=self._auth_source,
+                serverSelectionTimeoutMS=int(self._timeout * 1000),
+            )
+        else:
+            client = AsyncIOMotorClient(
+                host=self._hosts,
+                port=self._port,
+                username=self._user,
+                password=self._password,
+                authSource=self._auth_source,
+                serverSelectionTimeoutMS=int(self._timeout * 1000),
+            )
         database = client[self._database] if self._database else client[self._auth_source]
         try:
             res = await database.command("ping")
@@ -197,7 +211,7 @@ class MongoHealthCheck(HealthCheckDSN[HealthCheckResult]):
             A dictionary with the MongoHealthCheck attributes.
         """
         return {
-            "host": self._host,
+            "hosts": self._hosts,
             "port": self._port,
             "user": self._user,
             "password": self._password,

@@ -15,7 +15,7 @@ pytestmark = pytest.mark.unit
         (
             {},
             {
-                "host": "localhost",
+                "hosts": "localhost",
                 "port": 27017,
                 "user": None,
                 "password": None,
@@ -28,10 +28,10 @@ pytestmark = pytest.mark.unit
         ),
         (
             {
-                "host": "localhost2",
+                "hosts": "localhost2",
             },
             {
-                "host": "localhost2",
+                "hosts": "localhost2",
                 "port": 27017,
                 "user": None,
                 "password": None,
@@ -44,11 +44,11 @@ pytestmark = pytest.mark.unit
         ),
         (
             {
-                "host": "localhost2",
+                "hosts": "localhost2",
                 "port": 27018,
             },
             {
-                "host": "localhost2",
+                "hosts": "localhost2",
                 "port": 27018,
                 "user": None,
                 "password": None,
@@ -61,12 +61,12 @@ pytestmark = pytest.mark.unit
         ),
         (
             {
-                "host": "localhost2",
+                "hosts": "localhost2",
                 "port": 27018,
                 "user": "user",
             },
             {
-                "host": "localhost2",
+                "hosts": "localhost2",
                 "port": 27018,
                 "user": "user",
                 "password": None,
@@ -79,13 +79,13 @@ pytestmark = pytest.mark.unit
         ),
         (
             {
-                "host": "localhost2",
+                "hosts": "localhost2",
                 "port": 27018,
                 "user": "user",
                 "password": "pass",
             },
             {
-                "host": "localhost2",
+                "hosts": "localhost2",
                 "port": 27018,
                 "user": "user",
                 "password": "pass",
@@ -98,14 +98,14 @@ pytestmark = pytest.mark.unit
         ),
         (
             {
-                "host": "localhost2",
+                "hosts": "localhost2",
                 "port": 27018,
                 "user": "user",
                 "password": "pass",
                 "database": "test",
             },
             {
-                "host": "localhost2",
+                "hosts": "localhost2",
                 "port": 27018,
                 "user": "user",
                 "password": "pass",
@@ -118,7 +118,7 @@ pytestmark = pytest.mark.unit
         ),
         (
             {
-                "host": "localhost2",
+                "hosts": "localhost2",
                 "port": 27018,
                 "user": "user",
                 "password": "pass",
@@ -126,7 +126,7 @@ pytestmark = pytest.mark.unit
                 "auth_source": "admin2",
             },
             {
-                "host": "localhost2",
+                "hosts": "localhost2",
                 "port": 27018,
                 "user": "user",
                 "password": "pass",
@@ -139,7 +139,7 @@ pytestmark = pytest.mark.unit
         ),
         (
             {
-                "host": "localhost2",
+                "hosts": "localhost2",
                 "port": 27018,
                 "user": "user",
                 "password": "pass",
@@ -148,7 +148,7 @@ pytestmark = pytest.mark.unit
                 "timeout": 10.0,
             },
             {
-                "host": "localhost2",
+                "hosts": "localhost2",
                 "port": 27018,
                 "user": "user",
                 "password": "pass",
@@ -161,7 +161,7 @@ pytestmark = pytest.mark.unit
         ),
         (
             {
-                "host": "localhost2",
+                "hosts": "localhost2",
                 "port": 27018,
                 "user": "user",
                 "password": "pass",
@@ -171,7 +171,7 @@ pytestmark = pytest.mark.unit
                 "name": "test",
             },
             {
-                "host": "localhost2",
+                "hosts": "localhost2",
                 "port": 27018,
                 "user": "user",
                 "password": "pass",
@@ -206,7 +206,7 @@ def test_init(params: dict[str, Any], expected: dict[str, Any], exception: type[
             ("mongodb://localhost:27017/",),
             {},
             {
-                "host": "localhost",
+                "hosts": "localhost",
                 "port": 27017,
                 "user": None,
                 "password": None,
@@ -221,7 +221,7 @@ def test_init(params: dict[str, Any], expected: dict[str, Any], exception: type[
             ("mongodb://localhost:27017/test",),
             {},
             {
-                "host": "localhost",
+                "hosts": "localhost",
                 "port": 27017,
                 "user": None,
                 "password": None,
@@ -236,7 +236,7 @@ def test_init(params: dict[str, Any], expected: dict[str, Any], exception: type[
             ("mongodb://user:pass@localhost:27017/test",),
             {},
             {
-                "host": "localhost",
+                "hosts": "localhost",
                 "port": 27017,
                 "user": "user",
                 "password": "pass",
@@ -251,7 +251,7 @@ def test_init(params: dict[str, Any], expected: dict[str, Any], exception: type[
             ("mongodb://user:pass@localhost:27017/test?authSource=admin2",),
             {},
             {
-                "host": "localhost",
+                "hosts": "localhost",
                 "port": 27017,
                 "user": "user",
                 "password": "pass",
@@ -269,8 +269,26 @@ def test_init(params: dict[str, Any], expected: dict[str, Any], exception: type[
                 "name": "Test",
             },
             {
-                "host": "localhost",
+                "hosts": "localhost",
                 "port": 27017,
+                "user": "user",
+                "password": "pass",
+                "database": "test",
+                "auth_source": "admin2",
+                "timeout": 10.0,
+                "name": "Test",
+            },
+            None,
+        ),
+        (
+            ("mongodb://user:pass@localhost:27017,localhost2:27018/test?authSource=admin2",),
+            {
+                "timeout": 10.0,
+                "name": "Test",
+            },
+            {
+                "hosts": ["localhost:27017", "localhost2:27018"],
+                "port": None,
                 "user": "user",
                 "password": "pass",
                 "database": "test",
@@ -299,7 +317,7 @@ def test_from_dsn(
 @pytest.mark.asyncio
 async def test_AsyncIOMotorClient_args_kwargs() -> None:  # noqa: N802
     health_check = MongoHealthCheck(
-        host="localhost2",
+        hosts="localhost2",
         port=27018,
         user="user",
         password="password",
@@ -319,11 +337,32 @@ async def test_AsyncIOMotorClient_args_kwargs() -> None:  # noqa: N802
             serverSelectionTimeoutMS=1500,
         )
 
+    health_check2 = MongoHealthCheck(
+        hosts="localhost:27017,localhost2:27018",
+        port=None,
+        user="user",
+        password="password",
+        database="test",
+        auth_source="admin2",
+        timeout=1.5,
+        name="MongoDB",
+    )
+    with patch("fast_healthchecks.checks.mongo.AsyncIOMotorClient", spec=AsyncIOMotorClient) as mock:
+        await health_check2()
+        mock.assert_called_once_with(
+            host="localhost:27017,localhost2:27018",
+            port=None,
+            username="user",
+            password="password",
+            authSource="admin2",
+            serverSelectionTimeoutMS=1500,
+        )
+
 
 @pytest.mark.asyncio
 async def test__call_success() -> None:
     health_check = MongoHealthCheck(
-        host="localhost",
+        hosts="localhost",
         port=27017,
         user="user",
         password="password",
@@ -348,7 +387,7 @@ async def test__call_success() -> None:
 @pytest.mark.asyncio
 async def test__call_failure() -> None:
     health_check = MongoHealthCheck(
-        host="localhost",
+        hosts="localhost",
         port=27017,
         user="user",
         password="password",

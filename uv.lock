@@ -632,7 +632,7 @@ wheels = [
 
 [[package]]
 name = "fast-healthchecks"
-version = "0.1.5"
+version = "0.2.0"
 source = { virtual = "." }
 
 [package.optional-dependencies]
