@@ -11,7 +11,7 @@ services:
 
   redis:
     container_name: dev_fast_healthchecks_redis
-    image: redis:7-alpine
+    image: redis:8-alpine
     restart: on-failure
     ports: ['6379:6379']
     command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
@@ -29,7 +29,7 @@ services:
 
   zookeeper:
     container_name: dev_fast_healthchecks_zookeeper
-    image: confluentinc/cp-zookeeper:7.8.0
+    image: confluentinc/cp-zookeeper:7.9.2
     hostname: zookeeper
     ports:
       - "2181:2181"
@@ -39,7 +39,7 @@ services:
 
   kafka1:
     container_name: dev_fast_healthchecks_kafka1
-    image: confluentinc/cp-kafka:7.8.0
+    image: confluentinc/cp-kafka:7.9.2
     hostname: kafka1
     depends_on:
       - zookeeper
@@ -54,7 +54,7 @@ services:
 
   kafka2:
     container_name: dev_fast_healthchecks_kafka2
-    image: confluentinc/cp-kafka:7.8.0
+    image: confluentinc/cp-kafka:7.9.2
     hostname: kafka2
     depends_on:
       - zookeeper

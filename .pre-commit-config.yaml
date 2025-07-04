@@ -85,14 +85,14 @@ repos:
 
   - repo: https://github.com/astral-sh/uv-pre-commit
     # uv version.
-    rev: 0.6.14
+    rev: 0.7.19
     hooks:
       # Update the uv lockfile
       - id: uv-lock
       - id: uv-export
 
   - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
-    rev: v1.4.0
+    rev: v1.4.2
     hooks:
       - id: python-safety-dependencies-check
         files: requirements.txt

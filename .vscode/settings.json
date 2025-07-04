@@ -23,9 +23,6 @@
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     "yaml.customTags": ["!reference sequence"],
-    "mypy-type-checker.args": ["--config-file", "pyproject.toml", "--install-types"],
-    "mypy-type-checker.importStrategy": "fromEnvironment",
-    "mypy-type-checker.reportingScope": "workspace",
     "ruff.format.preview": true,
     "ruff.lint.preview": true,
 }
