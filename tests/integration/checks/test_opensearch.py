@@ -29,7 +29,7 @@ def fixture_opensearch_config(env_config: dict[str, Any]) -> OpenSearchConfig:
 
 @pytest.mark.asyncio
 async def test_opensearch_check_success(opensearch_config: OpenSearchConfig) -> None:
-    check = OpenSearchHealthCheck(**opensearch_config)
+    check = OpenSearchHealthCheck(**opensearch_config)  # ty: ignore[missing-argument]
     result = await check()
     assert result == HealthCheckResult(name="OpenSearch", healthy=True, error_details=None)
 
@@ -40,7 +40,7 @@ async def test_opensearch_check_failure(opensearch_config: OpenSearchConfig) -> 
         **opensearch_config,
         "hosts": "localhost2:9200",
     }
-    check = OpenSearchHealthCheck(**config)
+    check = OpenSearchHealthCheck(**config)  # ty: ignore[missing-argument]
     result = await check()
     assert result.healthy is False
     assert result.error_details is not None
@@ -53,7 +53,7 @@ async def test_opensearch_check_connection_error(opensearch_config: OpenSearchCo
         **opensearch_config,
         "hosts": "localhost:9300",
     }
-    check = OpenSearchHealthCheck(**config)
+    check = OpenSearchHealthCheck(**config)  # ty: ignore[missing-argument]
     result = await check()
     assert result.healthy is False
     assert result.error_details is not None

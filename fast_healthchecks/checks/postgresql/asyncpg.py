@@ -25,11 +25,11 @@ Example:
 
 import ssl
 from traceback import format_exc
-from typing import TYPE_CHECKING, Any, TypeAlias
+from typing import TYPE_CHECKING, Any
 
 from fast_healthchecks.checks._base import DEFAULT_HC_TIMEOUT
 from fast_healthchecks.checks.postgresql.base import BasePostgreSQLHealthCheck
-from fast_healthchecks.compat import PYDANTIC_INSTALLED
+from fast_healthchecks.compat import PostgresDsn
 from fast_healthchecks.models import HealthCheckResult
 
 IMPORT_ERROR_MSG = "asyncpg is not installed. Install it with `pip install asyncpg`."
@@ -41,12 +41,6 @@ except ImportError as exc:
 
 if TYPE_CHECKING:
     from asyncpg.connection import Connection
-
-
-if PYDANTIC_INSTALLED:
-    from pydantic import PostgresDsn
-else:  # pragma: no cover
-    PostgresDsn: TypeAlias = str  # type: ignore[no-redef]
 
 
 class PostgreSQLAsyncPGHealthCheck(BasePostgreSQLHealthCheck[HealthCheckResult]):

@@ -1,6 +1,6 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
-exclude: ^(poetry.lock|.vscode/)
+exclude: ^(uv.lock|.vscode/)
 default_language_version:
   python: python3.10
 
@@ -25,18 +25,17 @@ repos:
         args: ["--fix", "--exit-non-zero-on-fix", "--preview"]
         types_or: [python, pyi]
         language: python
-    -   id: mypy
-        name: "mypy"
-        entry: mypy
-        args: ["--config-file", "pyproject.toml", "--install-types", "--non-interactive", "--show-traceback"]
+    -   id: ty-check
+        name: ty-check
         types_or: [python, pyi]
         language: python
-        exclude: "(?x)^(
-            tests/.*
-          )$"
+        entry: ty check
+        pass_filenames: false
+        args: [--python=.venv/]
+        additional_dependencies: [ty]
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: check-added-large-files
       - id: check-ast
@@ -53,6 +52,7 @@ repos:
       - id: check-vcs-permalinks
       - id: check-xml
       - id: check-yaml
+        args: [--allow-multiple-documents, --unsafe]
         exclude: "(?x)^(
           mkdocs.yml
         )$"
@@ -67,8 +67,6 @@ repos:
       - id: end-of-file-fixer
       - id: file-contents-sorter
       - id: fix-byte-order-marker
-      - id: fix-encoding-pragma
-        args: ['--remove']
       - id: forbid-new-submodules
       - id: mixed-line-ending
       - id: name-tests-test
@@ -79,20 +77,28 @@ repos:
       - id: no-commit-to-branch
         args: [--branch, main]
       - id: pretty-format-json
+        args:
+          - "--autofix"
+          - "--indent=4"
+          - "--no-sort-keys"
       - id: requirements-txt-fixer
       - id: sort-simple-yaml
       - id: trailing-whitespace
 
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.20.0
+    hooks:
+    -   id: pyupgrade
+
+  - repo: https://github.com/fpgmaas/deptry.git
+    rev: 0.23.1
+    hooks:
+      - id: deptry
+
   - repo: https://github.com/astral-sh/uv-pre-commit
     # uv version.
-    rev: 0.7.19
+    rev: 0.8.18
     hooks:
       # Update the uv lockfile
       - id: uv-lock
       - id: uv-export
-
-  - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
-    rev: v1.4.2
-    hooks:
-      - id: python-safety-dependencies-check
-        files: requirements.txt

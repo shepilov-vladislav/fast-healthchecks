@@ -70,7 +70,7 @@ tests-imports:
 ## Run integration tests
 tests-integration:
 	@docker compose up -d
-	@echo "Waiting for services to start..."
+	@echo "Waiting 15 seconds for services to start..."
 	@sleep 15s
 	@uv sync --group=dev --all-extras
 	@uv run pytest --cov --cov-append -m 'integration'

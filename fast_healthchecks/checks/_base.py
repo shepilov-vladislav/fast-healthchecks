@@ -1,28 +1,18 @@
 """This module contains the base classes for all health checks."""
 
-from typing import TYPE_CHECKING, Any, Generic, Protocol, TypeAlias, TypeVar
+from typing import Generic, Protocol, TypeAlias, TypeVar
 
-from fast_healthchecks.compat import PYDANTIC_INSTALLED, PYDANTIC_V2
+from fast_healthchecks.compat import PYDANTIC_INSTALLED, PYDANTIC_V2, AmqpDsn, KafkaDsn, MongoDsn, PostgresDsn, RedisDsn
 from fast_healthchecks.models import HealthCheckResult
 
-if TYPE_CHECKING:
-    from pydantic import AmqpDsn, KafkaDsn, PostgresDsn, RedisDsn
-
-    from fast_healthchecks.compat import MongoDsn
-else:
-    AmqpDsn: TypeAlias = str
-    KafkaDsn: TypeAlias = str
-    MongoDsn: TypeAlias = str
-    PostgresDsn: TypeAlias = str
-    RedisDsn: TypeAlias = str
+AnyDsn: TypeAlias = AmqpDsn | KafkaDsn | MongoDsn | PostgresDsn | RedisDsn
 
 if PYDANTIC_INSTALLED:
     if PYDANTIC_V2:
         from pydantic import TypeAdapter
     else:  # pragma: no cover
-        from pydantic import parse_obj_as
+        from pydantic import parse_obj_as  # ty: ignore[deprecated]
 
-SupportedDsns: TypeAlias = AmqpDsn | KafkaDsn | MongoDsn | PostgresDsn | RedisDsn
 
 T_co = TypeVar("T_co", bound=HealthCheckResult, covariant=True)
 
@@ -48,7 +38,7 @@ class HealthCheckDSN(HealthCheck[T_co], Generic[T_co]):
     @classmethod
     def from_dsn(
         cls,
-        dsn: Any,  # noqa: ANN401
+        dsn: AnyDsn,
         *,
         name: str = "Service",
         timeout: float = DEFAULT_HC_TIMEOUT,
@@ -63,12 +53,12 @@ class HealthCheckDSN(HealthCheck[T_co], Generic[T_co]):
             raise RuntimeError(msg) from None
 
     @classmethod
-    def validate_dsn(cls, dsn: str | SupportedDsns, type_: type[SupportedDsns]) -> str:
+    def validate_dsn(cls, dsn: AnyDsn | str, type_: type[AnyDsn]) -> str:
         """Validate the DSN."""
         if not PYDANTIC_INSTALLED:
-            type_(dsn)  # type: ignore[arg-type]
+            _ = type_(dsn)
             return str(dsn)
 
         if PYDANTIC_V2:
             return str(TypeAdapter(type_).validate_python(dsn))
-        return str(parse_obj_as(type_, dsn))  # pragma: no cover
+        return str(parse_obj_as(type_, dsn))  # pragma: no cover  # ty: ignore[deprecated]

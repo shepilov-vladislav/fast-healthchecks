@@ -9,7 +9,7 @@ pytestmark = pytest.mark.integration
 
 
 class MongoConfig(TypedDict, total=True):
-    host: str
+    hosts: str
     port: int
     user: str | None
     password: str | None
@@ -35,7 +35,7 @@ def fixture_mongo_config(env_config: dict[str, Any]) -> MongoConfig:
                     result[key] = int(value)
             case _:
                 if value is not None:
-                    result[key] = str(value)
+                    result[key] = str(value)  # ty: ignore[invalid-assignment]
 
     return result
 

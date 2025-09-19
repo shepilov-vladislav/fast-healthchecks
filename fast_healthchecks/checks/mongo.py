@@ -21,7 +21,7 @@ Example:
 
 import logging
 from traceback import format_exc
-from typing import Any, TypedDict
+from typing import Any, TypedDict, final
 from urllib.parse import ParseResult, unquote, urlparse
 
 from fast_healthchecks.checks._base import DEFAULT_HC_TIMEOUT, HealthCheckDSN
@@ -46,6 +46,7 @@ class ParseDSNResult(TypedDict, total=True):
     authSource: str
 
 
+@final
 class MongoHealthCheck(HealthCheckDSN[HealthCheckResult]):
     """A class to perform health checks on MongoDB.
 
@@ -179,7 +180,7 @@ class MongoHealthCheck(HealthCheckDSN[HealthCheckResult]):
         """
         client: AsyncIOMotorClient[dict[str, Any]]
         if isinstance(self._hosts, list):
-            client = AsyncIOMotorClient(
+            client = AsyncIOMotorClient(  # pragma: no cover
                 host=self._hosts,
                 username=self._user,
                 password=self._password,

@@ -25,7 +25,7 @@ def fixture_asyncpg_config(base_postgresql_config: BasePostgreSQLConfig) -> Asyn
 
 @pytest.mark.asyncio
 async def test_postgresql_asyncpg_check_success(asyncpg_config: AsyncPGConfig) -> None:
-    check = PostgreSQLAsyncPGHealthCheck(**asyncpg_config)
+    check = PostgreSQLAsyncPGHealthCheck(**asyncpg_config)  # ty: ignore[missing-argument]
     result = await check()
     assert result == HealthCheckResult(name="PostgreSQL", healthy=True, error_details=None)
 
@@ -36,7 +36,7 @@ async def test_postgresql_asyncpg_check_failure(asyncpg_config: AsyncPGConfig) -
         **asyncpg_config,
         "host": "localhost2",
     }
-    check = PostgreSQLAsyncPGHealthCheck(**config)
+    check = PostgreSQLAsyncPGHealthCheck(**config)  # ty: ignore[missing-argument]
     result = await check()
     assert result.healthy is False
     assert result.error_details is not None
@@ -49,7 +49,7 @@ async def test_postgresql_asyncpg_check_connection_error(asyncpg_config: AsyncPG
         **asyncpg_config,
         "port": 6432,
     }
-    check = PostgreSQLAsyncPGHealthCheck(**config)
+    check = PostgreSQLAsyncPGHealthCheck(**config)  # ty: ignore[missing-argument]
     result = await check()
     assert result.healthy is False
     assert result.error_details is not None

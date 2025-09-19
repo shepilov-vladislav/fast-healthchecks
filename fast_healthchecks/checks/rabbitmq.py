@@ -18,7 +18,7 @@ Example:
 """
 
 from traceback import format_exc
-from typing import Any, TypeAlias, TypedDict
+from typing import Any, TypeAlias, TypedDict, final
 from urllib.parse import ParseResult, urlparse
 
 from fast_healthchecks.checks._base import DEFAULT_HC_TIMEOUT, HealthCheckDSN
@@ -35,7 +35,7 @@ except ImportError as exc:
 if PYDANTIC_INSTALLED:
     from pydantic import AmqpDsn
 else:  # pragma: no cover
-    AmqpDsn: TypeAlias = str  # type: ignore[no-redef]
+    AmqpDsn: TypeAlias = str
 
 
 class ParseDSNResult(TypedDict, total=True):
@@ -44,6 +44,7 @@ class ParseDSNResult(TypedDict, total=True):
     parse_result: ParseResult
 
 
+@final
 class RabbitMQHealthCheck(HealthCheckDSN[HealthCheckResult]):
     """A class to perform health checks on RabbitMQ.
 

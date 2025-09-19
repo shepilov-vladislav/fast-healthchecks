@@ -1,5 +1,6 @@
 import shutil
 import tempfile
+from collections.abc import Generator
 from contextlib import contextmanager
 from pathlib import Path
 from urllib.parse import quote
@@ -32,7 +33,7 @@ TEST_SSLROOTCERT = quote(f"{temp_dir}/{SSLROOTCERT_NAME}")
 
 
 @contextmanager
-def create_temp_files(temp_file_paths: list[str]) -> None:
+def create_temp_files(temp_file_paths: list[str]) -> Generator[None, None, None]:
     paths = [Path(temp_file_path) for temp_file_path in temp_file_paths]
     for path in paths:
         if path.name in SSL_FILES_MAP:

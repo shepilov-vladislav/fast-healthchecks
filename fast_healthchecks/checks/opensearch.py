@@ -20,7 +20,7 @@ Example:
 """
 
 from traceback import format_exc
-from typing import Any
+from typing import Any, final
 
 from fast_healthchecks.checks._base import DEFAULT_HC_TIMEOUT, HealthCheck
 from fast_healthchecks.models import HealthCheckResult
@@ -28,11 +28,12 @@ from fast_healthchecks.models import HealthCheckResult
 IMPORT_ERROR_MSG = "opensearch-py is not installed. Install it with `pip install opensearch-py`."
 
 try:
-    from opensearchpy import AsyncOpenSearch
+    from opensearchpy import AsyncOpenSearch  # ty: ignore[possibly-unbound-import]
 except ImportError as exc:
     raise ImportError(IMPORT_ERROR_MSG) from exc
 
 
+@final
 class OpenSearchHealthCheck(HealthCheck[HealthCheckResult]):
     """A class to perform health checks on OpenSearch.
 

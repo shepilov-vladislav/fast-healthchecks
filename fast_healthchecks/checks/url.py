@@ -16,7 +16,7 @@ Example:
 
 from http import HTTPStatus
 from traceback import format_exc
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, final
 
 from fast_healthchecks.checks._base import DEFAULT_HC_TIMEOUT, HealthCheck
 from fast_healthchecks.models import HealthCheckResult
@@ -32,6 +32,7 @@ if TYPE_CHECKING:
     from httpx._types import URLTypes
 
 
+@final
 class UrlHealthCheck(HealthCheck[HealthCheckResult]):
     """A class to perform health checks on URLs.
 

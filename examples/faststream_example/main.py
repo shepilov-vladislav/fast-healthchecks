@@ -12,7 +12,8 @@ from examples.probes import (
     STARTUP_CHECKS,
     custom_handler,
 )
-from fast_healthchecks.integrations.faststream import Probe, health
+from fast_healthchecks.integrations.base import Probe
+from fast_healthchecks.integrations.faststream import health
 
 broker = KafkaBroker(os.environ["KAFKA_BOOTSTRAP_SERVERS"].split(","))
 app_integration = AsgiFastStream(

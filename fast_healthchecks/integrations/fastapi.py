@@ -28,9 +28,9 @@ class HealthcheckRouter(APIRouter):
         **kwargs: dict[str, Any],
     ) -> None:
         """Initialize the router."""
-        kwargs["prefix"] = prefix  # type: ignore[assignment]
-        kwargs["tags"] = ["Healthchecks"]  # type: ignore[assignment]
-        super().__init__(**kwargs)  # type: ignore[arg-type]
+        kwargs["prefix"] = prefix  # ty: ignore[invalid-assignment]
+        kwargs["tags"] = ["Healthchecks"]  # ty: ignore[invalid-assignment]
+        super().__init__(**kwargs)
         for probe in probes:
             self._add_probe_route(
                 probe,

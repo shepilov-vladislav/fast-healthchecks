@@ -17,10 +17,9 @@ Example:
 
 import ssl
 from traceback import format_exc
-from typing import Any, Literal, TypeAlias
+from typing import Any, Literal, TypeAlias, final
 
 from fast_healthchecks.checks._base import DEFAULT_HC_TIMEOUT, HealthCheck
-from fast_healthchecks.compat import PYDANTIC_INSTALLED
 from fast_healthchecks.models import HealthCheckResult
 
 IMPORT_ERROR_MSG = "aiokafka is not installed. Install it with `pip install aiokafka`."
@@ -30,16 +29,11 @@ try:
 except ImportError as exc:
     raise ImportError(IMPORT_ERROR_MSG) from exc
 
-
-if PYDANTIC_INSTALLED:
-    from pydantic import KafkaDsn
-else:  # pragma: no cover
-    KafkaDsn: TypeAlias = str  # type: ignore[no-redef]
-
 SecurityProtocol: TypeAlias = Literal["SSL", "PLAINTEXT", "SASL_PLAINTEXT", "SASL_SSL"]
 SaslMechanism: TypeAlias = Literal["PLAIN", "GSSAPI", "SCRAM-SHA-256", "SCRAM-SHA-512", "OAUTHBEARER"]
 
 
+@final
 class KafkaHealthCheck(HealthCheck[HealthCheckResult]):
     """A class to perform health checks on Kafka.
 

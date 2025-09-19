@@ -159,9 +159,9 @@ pytestmark = pytest.mark.unit
 def test_init(params: dict[str, Any], expected: dict[str, Any], exception: type[BaseException] | None) -> None:
     if exception is not None:
         with pytest.raises(exception, match=str(expected)):
-            RabbitMQHealthCheck(**params)
+            RabbitMQHealthCheck(**params)  # ty: ignore[missing-argument]
     else:
-        obj = RabbitMQHealthCheck(**params)
+        obj = RabbitMQHealthCheck(**params)  # ty: ignore[missing-argument]
         assert obj.to_dict() == expected
 
 
@@ -277,7 +277,7 @@ def test_from_dsn(
     expected: dict[str, Any] | str,
     exception: type[BaseException] | None,
 ) -> None:
-    if exception is not None:
+    if exception is not None and isinstance(expected, str):
         with pytest.raises(exception, match=expected):
             RabbitMQHealthCheck.from_dsn(*args, **kwargs)
     else:
@@ -333,7 +333,7 @@ async def test_call_failure() -> None:
         result = await health_check()
         assert result.healthy is False
         assert result.name == "RabbitMQ"
-        assert "Connection failed" in result.error_details
+        assert "Connection failed" in str(result.error_details)
         mock_connect.assert_called_once_with(
             host="localhost",
             port=5672,

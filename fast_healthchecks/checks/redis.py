@@ -15,11 +15,13 @@ Example:
     print(result.healthy)
 """
 
+from __future__ import annotations
+
 from traceback import format_exc
-from typing import TYPE_CHECKING, Any, TypeAlias, TypedDict
+from typing import TYPE_CHECKING, Any, TypedDict, final
 
 from fast_healthchecks.checks._base import DEFAULT_HC_TIMEOUT, HealthCheckDSN
-from fast_healthchecks.compat import PYDANTIC_INSTALLED
+from fast_healthchecks.compat import RedisDsn
 from fast_healthchecks.models import HealthCheckResult
 
 IMPORT_ERROR_MSG = "redis is not installed. Install it with `pip install redis`."
@@ -34,18 +36,13 @@ if TYPE_CHECKING:
     from redis.asyncio.connection import ConnectKwargs
 
 
-if PYDANTIC_INSTALLED:
-    from pydantic import RedisDsn
-else:  # pragma: no cover
-    RedisDsn: TypeAlias = str  # type: ignore[no-redef]
-
-
 class ParseDSNResult(TypedDict, total=True):
     """A dictionary containing the results of parsing a DSN."""
 
-    parse_result: "ConnectKwargs"
+    parse_result: ConnectKwargs
 
 
+@final
 class RedisHealthCheck(HealthCheckDSN[HealthCheckResult]):
     """A class to perform health checks on Redis.
 
@@ -127,17 +124,17 @@ class RedisHealthCheck(HealthCheckDSN[HealthCheckResult]):
         Returns:
             ParseDSNResult: The results of parsing the DSN.
         """
-        parse_result: "ConnectKwargs" = parse_url(str(dsn))  # noqa: UP037
+        parse_result: ConnectKwargs = parse_url(str(dsn))
         return {"parse_result": parse_result}
 
     @classmethod
     def from_dsn(
         cls,
-        dsn: "RedisDsn | str",
+        dsn: RedisDsn | str,
         *,
         name: str = "Redis",
         timeout: float = DEFAULT_HC_TIMEOUT,
-    ) -> "RedisHealthCheck":
+    ) -> RedisHealthCheck:
         """Create a RedisHealthCheck instance from a DSN.
 
         Args:
@@ -151,7 +148,7 @@ class RedisHealthCheck(HealthCheckDSN[HealthCheckResult]):
         dsn = cls.validate_dsn(dsn, type_=RedisDsn)
         parsed_dsn = cls.parse_dsn(dsn)
         parse_result = parsed_dsn["parse_result"]
-        ssl_ca_certs: str | None = parse_result.get("ssl_ca_certs", None)  # type: ignore[assignment]
+        ssl_ca_certs: str | None = parse_result.get("ssl_ca_certs", None)
         ssl = "ssl_ca_certs" in parse_result and bool(ssl_ca_certs)
         return RedisHealthCheck(
             host=parse_result.get("host", "localhost"),

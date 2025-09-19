@@ -306,7 +306,7 @@ def test_from_dsn(
     expected: dict[str, Any] | str,
     exception: type[BaseException] | None,
 ) -> None:
-    if exception is not None:
+    if exception is not None and isinstance(expected, str):
         with pytest.raises(exception, match=expected):
             MongoHealthCheck.from_dsn(*args, **kwargs)
     else:

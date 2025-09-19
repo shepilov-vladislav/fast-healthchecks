@@ -3,7 +3,7 @@ from typing import Any
 from unittest.mock import AsyncMock, patch
 
 import pytest
-from opensearchpy import AsyncOpenSearch
+from opensearchpy import AsyncOpenSearch  # ty: ignore[possibly-unbound-import]
 
 from fast_healthchecks.checks.opensearch import OpenSearchHealthCheck
 
@@ -179,11 +179,11 @@ test_ssl_context = ssl.create_default_context()
     ],
 )
 def test__init(params: dict[str, Any], expected: dict[str, Any] | str, exception: type[BaseException] | None) -> None:
-    if exception is not None:
+    if exception is not None and isinstance(expected, str):
         with pytest.raises(exception, match=expected):
-            OpenSearchHealthCheck(**params)
+            OpenSearchHealthCheck(**params)  # ty: ignore[missing-argument]
     else:
-        obj = OpenSearchHealthCheck(**params)
+        obj = OpenSearchHealthCheck(**params)  # ty: ignore[missing-argument]
         assert obj.to_dict() == expected
 
 
@@ -254,7 +254,7 @@ async def test__call_failure() -> None:
         result = await health_check()
         assert result.healthy is False
         assert result.name == "OpenSearch"
-        assert "Connection error" in result.error_details
+        assert "Connection error" in str(result.error_details)
         mock_client.info.assert_called_once_with()
         mock_client.info.assert_awaited_once_with()
         mock_client.close.assert_called_once_with()

@@ -791,11 +791,11 @@ pytestmark = pytest.mark.unit
     ],
 )
 def test__init(params: dict[str, Any], expected: dict[str, Any] | str, exception: type[BaseException] | None) -> None:
-    if exception is not None:
+    if exception is not None and isinstance(expected, str):
         with pytest.raises(exception, match=expected):
-            PostgreSQLPsycopgHealthCheck(**params)
+            PostgreSQLPsycopgHealthCheck(**params)  # ty: ignore[missing-argument]
     else:
-        obj = PostgreSQLPsycopgHealthCheck(**params)
+        obj = PostgreSQLPsycopgHealthCheck(**params)  # ty: ignore[missing-argument]
         assert obj.to_dict() == expected
 
 
@@ -1145,14 +1145,14 @@ def test_from_dsn(
     query = {k: unquote(v) for k, v in (q.split("=") for q in parse_result.query.split("&"))}
     files = [y for x, y in query.items() if x in {"sslcert", "sslkey", "sslrootcert"}]
 
-    if exception is not None:
+    if exception is not None and isinstance(expected, str):
         with pytest.raises(exception, match=expected), create_temp_files(files):
             PostgreSQLPsycopgHealthCheck.from_dsn(*args, **kwargs)
     else:
         with create_temp_files(files):
             check = PostgreSQLPsycopgHealthCheck.from_dsn(*args, **kwargs)
-            if "ssl" in expected and expected["ssl"] is not None:
-                expected["ssl"] = create_ssl_context(*expected["ssl"])
+            if "ssl" in expected and expected["ssl"] is not None:  # ty: ignore[invalid-argument-type]
+                expected["ssl"] = create_ssl_context(*expected["ssl"])  # ty: ignore[invalid-argument-type,possibly-unbound-implicit-call]
             assert check.to_dict() == expected
 
 
@@ -1271,4 +1271,4 @@ async def test__call_failure() -> None:
             result = await health_check()
             assert result.healthy is False
             assert result.name == "test"
-            assert "Database error" in result.error_details
+            assert "Database error" in str(result.error_details)

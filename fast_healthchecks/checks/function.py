@@ -19,12 +19,13 @@ import asyncio
 import functools
 from collections.abc import Callable
 from traceback import format_exc
-from typing import Any
+from typing import Any, final
 
 from fast_healthchecks.checks._base import DEFAULT_HC_TIMEOUT, HealthCheck
 from fast_healthchecks.models import HealthCheckResult
 
 
+@final
 class FunctionHealthCheck(HealthCheck[HealthCheckResult]):
     """A class to perform health checks on a function.
 

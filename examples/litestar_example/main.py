@@ -9,7 +9,8 @@ from examples.probes import (
     STARTUP_CHECKS,
     custom_handler,
 )
-from fast_healthchecks.integrations.litestar import Probe, health
+from fast_healthchecks.integrations.base import Probe
+from fast_healthchecks.integrations.litestar import health
 
 app_integration = Litestar(
     route_handlers=[

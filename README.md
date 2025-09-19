@@ -109,7 +109,7 @@ app.include_router(
                 PostgreSQLPsycopgHealthCheck.from_dsn(os.environ["POSTGRES_DSN"], name="PostgreSQL psycopg"),
                 RabbitMQHealthCheck.from_dsn(os.environ["RABBITMQ_DSN"], name="RabbitMQ"),
                 RedisHealthCheck.from_dsn(os.environ["REDIS_DSN"], name="Redis"),
-                UrlHealthCheck(url="https://httpbin.org/status/200", name="URL 200"),
+                UrlHealthCheck(url="https://httpbingo.org/status/200", name="URL 200"),
             ],
         ),
         Probe(

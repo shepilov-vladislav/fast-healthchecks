@@ -14,7 +14,7 @@ pytestmark = pytest.mark.unit
 async def test_url_health_check_success() -> None:
     check = UrlHealthCheck(
         name="test_check",
-        url="https://httpbin.org/status/200",
+        url="https://httpbingo.org/status/200",
     )
     result = await check()
     assert result == HealthCheckResult(name="test_check", healthy=True)
@@ -25,11 +25,11 @@ async def test_url_health_check_success() -> None:
 async def test_url_health_check_failure() -> None:
     check = UrlHealthCheck(
         name="test_check",
-        url="https://httpbin.org/status/500",
+        url="https://httpbingo.org/status/500",
     )
     result = await check()
     assert result.healthy is False
-    assert "500 INTERNAL SERVER ERROR" in result.error_details
+    assert "500 Internal Server Error" in str(result.error_details)
 
 
 @pytest.mark.vcr
@@ -37,7 +37,7 @@ async def test_url_health_check_failure() -> None:
 async def test_url_health_check_with_basic_auth_success() -> None:
     check = UrlHealthCheck(
         name="test_check",
-        url="https://httpbin.org/basic-auth/user/passwd",
+        url="https://httpbingo.org/basic-auth/user/passwd",
         username="user",
         password="passwd",
     )
@@ -50,13 +50,13 @@ async def test_url_health_check_with_basic_auth_success() -> None:
 async def test_url_health_check_with_basic_auth_failure() -> None:
     check = UrlHealthCheck(
         name="test_check",
-        url="https://httpbin.org/basic-auth/user/passwd",
+        url="https://httpbingo.org/basic-auth/user/passwd",
         username="user",
         password="wrong_passwd",
     )
     result = await check()
     assert result.healthy is False
-    assert "401 UNAUTHORIZED" in result.error_details
+    assert "401 Unauthorized" in str(result.error_details)
 
 
 @pytest.mark.vcr
@@ -64,19 +64,20 @@ async def test_url_health_check_with_basic_auth_failure() -> None:
 async def test_url_health_check_with_timeout() -> None:
     check = UrlHealthCheck(
         name="test_check",
-        url="https://httpbin.org/delay/5",
+        url="https://httpbingo.org/delay/5",
         timeout=0.1,
     )
     result = await check()
     assert result.healthy is False
-    assert "Timeout" in result.error_details
+    assert "Timeout" in str(result.error_details)
 
 
+@pytest.mark.vcr
 @pytest.mark.asyncio
 async def test_AsyncClient_args_kwargs() -> None:  # noqa: N802
     health_check = UrlHealthCheck(
         name="Test",
-        url="https://httpbin.org/status/200",
+        url="https://httpbingo.org/status/200",
         username="user",
         password="passwd",
         follow_redirects=False,
@@ -100,4 +101,4 @@ async def test_AsyncClient_args_kwargs() -> None:  # noqa: N802
             transport=health_check._transport,
             follow_redirects=False,
         )
-        AsyncClient_mock.get.assert_called_once_with("https://httpbin.org/status/200")
+        AsyncClient_mock.get.assert_called_once_with("https://httpbingo.org/status/200")

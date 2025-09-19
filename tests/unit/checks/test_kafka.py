@@ -328,11 +328,11 @@ test_ssl_context = ssl.create_default_context()
     ],
 )
 def test__init(params: dict[str, Any], expected: dict[str, Any] | str, exception: type[BaseException] | None) -> None:
-    if exception is not None:
+    if exception is not None and isinstance(expected, str):
         with pytest.raises(exception, match=expected):
-            KafkaHealthCheck(**params)
+            KafkaHealthCheck(**params)  # ty: ignore[missing-argument]
     else:
-        obj = KafkaHealthCheck(**params)
+        obj = KafkaHealthCheck(**params)  # ty: ignore[missing-argument]
         assert obj.to_dict() == expected
 
 
@@ -391,7 +391,7 @@ async def test__call_failure() -> None:
         result = await health_check()
         assert result.healthy is False
         assert result.name == "Kafka"
-        assert "Connection error" in result.error_details
+        assert "Connection error" in str(result.error_details)
         mock_bootstrap.assert_called_once_with()
         mock_bootstrap.assert_awaited_once_with()
         mock_close.assert_called_once_with()

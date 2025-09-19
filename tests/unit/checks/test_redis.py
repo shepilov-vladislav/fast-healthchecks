@@ -328,7 +328,7 @@ def test_from_dsn(
     expected: dict[str, Any] | str,
     exception: type[BaseException] | None,
 ) -> None:
-    if exception is not None:
+    if exception is not None and isinstance(expected, str):
         with pytest.raises(exception, match=expected):
             RedisHealthCheck.from_dsn(*args, **kwargs)
     else:
@@ -383,7 +383,7 @@ async def test_call_exception() -> None:
         result = await health_check()
         assert result.name == "Redis"
         assert result.healthy is False
-        assert "Connection error" in result.error_details
+        assert "Connection error" in str(result.error_details)
         patched_Redis.assert_called_once_with(
             host="localhost",
             port=6379,

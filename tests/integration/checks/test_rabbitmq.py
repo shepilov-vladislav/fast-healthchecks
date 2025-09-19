@@ -40,7 +40,7 @@ def fixture_rabbitmq_config(env_config: dict[str, Any]) -> RabbitMqConfig:
 
 @pytest.mark.asyncio
 async def test_rabbitmq_check_success(rabbitmq_config: RabbitMqConfig) -> None:
-    check = RabbitMQHealthCheck(**rabbitmq_config)
+    check = RabbitMQHealthCheck(**rabbitmq_config)  # ty: ignore[missing-argument]
     result = await check()
     assert result == HealthCheckResult(name="RabbitMQ", healthy=True, error_details=None)
 
@@ -51,7 +51,7 @@ async def test_rabbitmq_check_failure(rabbitmq_config: RabbitMqConfig) -> None:
         **rabbitmq_config,
         "host": "localhost2",
     }
-    check = RabbitMQHealthCheck(**config)
+    check = RabbitMQHealthCheck(**config)  # ty: ignore[missing-argument]
     result = await check()
     assert result.healthy is False
     assert result.error_details is not None
@@ -64,7 +64,7 @@ async def test_rabbitmq_check_connection_error(rabbitmq_config: RabbitMqConfig) 
         **rabbitmq_config,
         "port": 5673,
     }
-    check = RabbitMQHealthCheck(**config)
+    check = RabbitMQHealthCheck(**config)  # ty: ignore[missing-argument]
     result = await check()
     assert result.healthy is False
     assert result.error_details is not None

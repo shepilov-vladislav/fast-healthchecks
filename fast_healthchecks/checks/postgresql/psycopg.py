@@ -24,11 +24,11 @@ Example:
 """
 
 from traceback import format_exc
-from typing import TYPE_CHECKING, Any, TypeAlias
+from typing import TYPE_CHECKING, Any
 
 from fast_healthchecks.checks._base import DEFAULT_HC_TIMEOUT
 from fast_healthchecks.checks.postgresql.base import BasePostgreSQLHealthCheck, SslMode
-from fast_healthchecks.compat import PYDANTIC_INSTALLED
+from fast_healthchecks.compat import PostgresDsn
 from fast_healthchecks.models import HealthCheckResult
 
 IMPORT_ERROR_MSG = "psycopg is not installed. Install it with `pip install psycopg`."
@@ -40,12 +40,6 @@ except ImportError as exc:
 
 if TYPE_CHECKING:
     from psycopg import AsyncConnection
-
-
-if PYDANTIC_INSTALLED:
-    from pydantic import PostgresDsn
-else:  # pragma: no cover
-    PostgresDsn: TypeAlias = str  # type: ignore[no-redef]
 
 
 class PostgreSQLPsycopgHealthCheck(BasePostgreSQLHealthCheck[HealthCheckResult]):

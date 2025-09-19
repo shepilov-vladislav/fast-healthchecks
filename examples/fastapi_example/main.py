@@ -8,7 +8,8 @@ from examples.probes import (
     STARTUP_CHECKS,
     custom_handler,
 )
-from fast_healthchecks.integrations.fastapi import HealthcheckRouter, Probe
+from fast_healthchecks.integrations.base import Probe
+from fast_healthchecks.integrations.fastapi import HealthcheckRouter
 
 app_integration = FastAPI()
 app_integration.include_router(

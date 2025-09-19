@@ -8,7 +8,7 @@ from dataclasses import asdict
 from http import HTTPStatus
 from typing import Any, NamedTuple, TypeAlias
 
-from fast_healthchecks.checks import Check
+from fast_healthchecks.checks.types import Check
 from fast_healthchecks.models import HealthcheckReport, HealthCheckResult
 
 HandlerType: TypeAlias = Callable[["ProbeAsgiResponse"], Awaitable[dict[str, str]]]
@@ -118,9 +118,9 @@ class ProbeAsgi:
         self._success_status = success_status
         self._failure_status = failure_status
         self._debug = debug
-        self._exclude_fields: set[str] = {"allow_partial_failure", "error_details"} if not debug else set()
-        self._map_status: dict[bool, int] = {True: success_status, False: failure_status}
-        self._map_handler: dict[bool, HandlerType] = {True: success_handler, False: failure_handler}
+        self._exclude_fields = {"allow_partial_failure", "error_details"} if not debug else set()
+        self._map_status = {True: success_status, False: failure_status}
+        self._map_handler = {True: success_handler, False: failure_handler}
 
     async def __call__(self) -> tuple[bytes, dict[str, str] | None, int]:
         """Run the probe.
@@ -129,7 +129,7 @@ class ProbeAsgi:
             A tuple containing the response body, headers, and status code.
         """
         tasks = [check() for check in self._probe.checks]
-        results: list[HealthCheckResult] = await asyncio.gather(*tasks)
+        results: list[HealthCheckResult] = await asyncio.gather(*tasks)  # ty: ignore[invalid-assignment]
         report = HealthcheckReport(results=results)
         response = ProbeAsgiResponse(
             data=asdict(
