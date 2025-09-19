@@ -1,3 +1,9 @@
+## 0.2.4 (2025-09-19)
+
+### Fix
+
+- **typing**: make typing not failable
+
 ## 0.2.3 (2025-09-19)
 
 ### Fix
