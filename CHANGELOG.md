@@ -1,3 +1,9 @@
+## 0.2.3 (2025-09-19)
+
+### Fix
+
+- **all**: upgrade dependencies, make tests more stable, swith `mypy` to `ty`
+
 ## 0.2.2 (2025-04-16)
 
 ### Fix
